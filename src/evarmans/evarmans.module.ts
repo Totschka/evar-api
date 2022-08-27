@@ -5,9 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Evarman, EvarmanSchema } from './schemas/evarman.schema';
 
 @Module({
-  imports: [
-    MongooseModule.forFeature([{ name: Evarman.name, schema: EvarmanSchema }]),
-  ],
+  imports: [MongooseModule.forFeature([{ name: Evarman.name, schema: EvarmanSchema }])],
   controllers: [EvarmansController],
   providers: [EvarmansService],
 })

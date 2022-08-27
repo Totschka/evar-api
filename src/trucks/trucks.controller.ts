@@ -1,12 +1,4 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { TrucksService } from './trucks.service';
 import { CreateTruckDto } from './dto/create-truck.dto';
 import { UpdateTruckDto } from './dto/update-truck.dto';
@@ -33,10 +25,7 @@ export class TrucksController {
   }
 
   @Patch(':car_number')
-  update(
-    @Param('car_number') car_number: string,
-    @Body() updateTruckDto: UpdateTruckDto,
-  ) {
+  update(@Param('car_number') car_number: string, @Body() updateTruckDto: UpdateTruckDto) {
     return this.trucksService.update(car_number, updateTruckDto);
   }
 

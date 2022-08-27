@@ -1,10 +1,4 @@
-import {
-  ExceptionFilter,
-  Catch,
-  ArgumentsHost,
-  HttpException,
-  HttpStatus,
-} from '@nestjs/common';
+import { ExceptionFilter, Catch, ArgumentsHost, HttpException, HttpStatus } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { MongooseError } from 'mongoose';
 
@@ -21,10 +15,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       const ex = exception as HttpException;
       status = ex.getStatus();
       message = ex.getResponse();
-    } else if (
-      exception.name === 'ValidationError' ||
-      exception.name === 'MongoServerError'
-    ) {
+    } else if (exception.name === 'ValidationError' || exception.name === 'MongoServerError') {
       status = HttpStatus.BAD_REQUEST;
       message = exception.message || 'unknown error';
     } else {

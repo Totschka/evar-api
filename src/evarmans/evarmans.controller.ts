@@ -1,12 +1,4 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { EvarmansService } from './evarmans.service';
 import { CreateEvarmanDto } from './dto/create-evarman.dto';
 import { UpdateEvarmanDto } from './dto/update-evarman.dto';
@@ -33,10 +25,7 @@ export class EvarmansController {
   }
 
   @Patch(':evarman_id')
-  update(
-    @Param('evarman_id') evarman_id: number,
-    @Body() updateEvarmanDto: UpdateEvarmanDto,
-  ) {
+  update(@Param('evarman_id') evarman_id: number, @Body() updateEvarmanDto: UpdateEvarmanDto) {
     return this.evarmansService.update(evarman_id, updateEvarmanDto);
   }
 

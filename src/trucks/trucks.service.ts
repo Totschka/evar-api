@@ -8,9 +8,7 @@ import { Truck } from './schemas/truck.schema';
 
 @Injectable()
 export class TrucksService {
-  constructor(
-    @InjectModel(Truck.name) private truckModel: Model<UserDocument>,
-  ) {}
+  constructor(@InjectModel(Truck.name) private truckModel: Model<UserDocument>) {}
 
   create(createTruckDto: CreateTruckDto) {
     const createdTruck = new this.truckModel(createTruckDto);
@@ -26,11 +24,7 @@ export class TrucksService {
   }
 
   update(car_number: string, updateTruckDto: UpdateTruckDto) {
-    return this.truckModel.findOneAndUpdate(
-      { car_number: car_number },
-      updateTruckDto,
-      { new: true },
-    );
+    return this.truckModel.findOneAndUpdate({ car_number: car_number }, updateTruckDto, { new: true });
   }
 
   remove(car_number: string) {

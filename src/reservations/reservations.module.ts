@@ -5,11 +5,7 @@ import { Reservation, ReservationSchema } from './schemas/reservation.schema';
 import { MongooseModule } from '@nestjs/mongoose';
 
 @Module({
-  imports: [
-    MongooseModule.forFeature([
-      { name: Reservation.name, schema: ReservationSchema },
-    ]),
-  ],
+  imports: [MongooseModule.forFeature([{ name: Reservation.name, schema: ReservationSchema }])],
   controllers: [ReservationsController],
   providers: [ReservationsService],
 })

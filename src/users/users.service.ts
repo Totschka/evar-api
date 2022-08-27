@@ -23,13 +23,9 @@ export class UsersService {
   }
 
   update(user_id: string, updateUserDto: UpdateUserDto) {
-    return this.userModel.findOneAndUpdate(
-      { user_id: user_id },
-      updateUserDto,
-      {
-        new: true,
-      },
-    );
+    return this.userModel.findOneAndUpdate({ user_id: user_id }, updateUserDto, {
+      new: true,
+    });
   }
 
   remove(user_id: string) {
