@@ -1,8 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { GeoJsonObject } from 'geojson';
 import { Document } from 'mongoose';
-import { configs } from '../../configs';
-import { constants } from '../../constants';
+import { configs } from 'src/configs';
+import { constants } from 'src/constants';
 
 export type ReservationDocument = Reservation & Document;
 
@@ -40,6 +40,9 @@ export class Reservation {
 
   @Prop({ default: constants.RESERVATION_STATUS.READY })
   reservation_status: number;
+
+  @Prop()
+  allocate_truck: string;
 }
 
 export const ReservationSchema = SchemaFactory.createForClass(Reservation);

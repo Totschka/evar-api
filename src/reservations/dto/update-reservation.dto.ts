@@ -5,4 +5,6 @@ export class UpdateReservationDto extends PartialType(CreateReservationDto) {
   reservation_id: string;
 
   reservation_status: number;
+
+  allocate_truck: string;
 }
