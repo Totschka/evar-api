@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { constants } from 'src/constants';
+import { Truck, TruckDocument } from 'src/trucks/schemas/truck.schema';
 import { CreateReservationDto } from './dto/create-reservation.dto';
 import { UpdateReservationDto } from './dto/update-reservation.dto';
 import { Reservation, ReservationDocument } from './schemas/reservation.schema';
@@ -9,8 +10,8 @@ import { Reservation, ReservationDocument } from './schemas/reservation.schema';
 @Injectable()
 export class ReservationsService {
   constructor(
-    @InjectModel(Reservation.name)
-    private reservationModel: Model<ReservationDocument>,
+    @InjectModel(Reservation.name) private reservationModel: Model<ReservationDocument>,
+    @InjectModel(Truck.name) private truckModel: Model<TruckDocument>,
   ) {}
 
   create(createReservationDto: CreateReservationDto) {
@@ -28,13 +29,33 @@ export class ReservationsService {
 
   update(reservation_id: string, updateReservationDto: UpdateReservationDto) {
     if (
-      updateReservationDto.reservation_status === constants.RESERVATION_STATUS.ALLOCATE &&
+      updateReservationDto.reservation_status > constants.RESERVATION_STATUS.READY &&
       !updateReservationDto.allocate_truck
     ) {
       throw new HttpException('should allocate specific truck', HttpStatus.BAD_REQUEST);
     }
 
-    return this.reservationModel.findOneAndUpdate({ id: reservation_id }, updateReservationDto);
+    if (updateReservationDto.reservation_status === constants.RESERVATION_STATUS.ALLOCATE) {
+      return this.truckModel
+        .findOneAndUpdate(
+          { car_number: updateReservationDto.allocate_truck },
+          { status: constants.TRUCK_STATUS.ALLOCATE },
+        )
+        .then(() => {
+          return this.reservationModel.findOneAndUpdate({ reservation_id: reservation_id }, updateReservationDto);
+        });
+    } else if (updateReservationDto.reservation_status === constants.RESERVATION_STATUS.COMPLETE) {
+      return this.truckModel
+        .findOneAndUpdate(
+          { car_number: updateReservationDto.allocate_truck },
+          { status: constants.TRUCK_STATUS.READY, $inc: { curr_battery: -updateReservationDto.charge_amount } },
+        )
+        .then(() => {
+          return this.reservationModel.findOneAndUpdate({ reservation_id: reservation_id }, updateReservationDto);
+        });
+    } else {
+      return this.reservationModel.findOneAndUpdate({ reservation_id: reservation_id }, updateReservationDto);
+    }
   }
 
   remove(reservation_id: string) {
