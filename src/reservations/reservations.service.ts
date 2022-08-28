@@ -35,12 +35,51 @@ export class ReservationsService {
       throw new HttpException('should allocate specific truck', HttpStatus.BAD_REQUEST);
     }
 
-    if (updateReservationDto.reservation_status === constants.RESERVATION_STATUS.ALLOCATE) {
-      return this.truckModel
-        .findOneAndUpdate(
-          { car_number: updateReservationDto.allocate_truck },
-          { status: constants.TRUCK_STATUS.ALLOCATE },
-        )
+    if (
+      updateReservationDto.reservation_status === constants.RESERVATION_STATUS.READY &&
+      !updateReservationDto.allocate_truck
+    ) {
+      return this.reservationModel
+        .findOne({ reservation_id: reservation_id })
+        .then((doc) => {
+          console.log(doc);
+          return this.truckModel.findOneAndUpdate(
+            { car_number: doc.allocate_truck },
+            { status: constants.TRUCK_STATUS.READY },
+          );
+        })
+        .then(() => {
+          console.log(updateReservationDto);
+          return this.reservationModel.findOneAndUpdate(
+            { reservation_id: reservation_id },
+            {
+              $set: { updateReservationDto },
+              $unset: !updateReservationDto.allocate_truck ? { allocate_truck: '' } : {},
+            },
+          );
+        });
+    }
+
+    if (
+      updateReservationDto.reservation_status === constants.RESERVATION_STATUS.ALLOCATE ||
+      updateReservationDto.reservation_status === constants.RESERVATION_STATUS.CHARGING
+    ) {
+      return this.reservationModel
+        .findOne({ reservation_id: reservation_id })
+        .then((doc) => {
+          if (doc.allocate_truck && doc.allocate_truck !== updateReservationDto.allocate_truck) {
+            return this.truckModel.findOneAndUpdate(
+              { car_number: doc.allocate_truck },
+              { status: constants.TRUCK_STATUS.READY },
+            );
+          }
+        })
+        .then(() => {
+          return this.truckModel.findOneAndUpdate(
+            { car_number: updateReservationDto.allocate_truck },
+            { status: constants.TRUCK_STATUS.ALLOCATE },
+          );
+        })
         .then(() => {
           return this.reservationModel.findOneAndUpdate({ reservation_id: reservation_id }, updateReservationDto);
         });
@@ -53,9 +92,9 @@ export class ReservationsService {
         .then(() => {
           return this.reservationModel.findOneAndUpdate({ reservation_id: reservation_id }, updateReservationDto);
         });
-    } else {
-      return this.reservationModel.findOneAndUpdate({ reservation_id: reservation_id }, updateReservationDto);
     }
+
+    return this.reservationModel.findOneAndUpdate({ reservation_id: reservation_id }, updateReservationDto);
   }
 
   remove(reservation_id: string) {
