@@ -11,6 +11,7 @@ async function bootstrap() {
     swaggerOptions: { defaultModelsExpandDepth: -1 },
   });
 
+  app.enableCors();
   app.useGlobalFilters(new GlobalExceptionFilter());
   await app.listen(3000);
   console.log(`Application is running on: ${await app.getUrl()}`);

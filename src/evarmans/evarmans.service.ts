@@ -26,9 +26,7 @@ export class EvarmansService {
   }
 
   update(evarman_id: number, updateEvarmanDto: UpdateEvarmanDto) {
-    return this.evarmanModel.findOneAndUpdate({ evarman_id: evarman_id }, updateEvarmanDto, {
-      new: true,
-    });
+    return this.evarmanModel.findOneAndUpdate({ evarman_id: evarman_id }, updateEvarmanDto);
   }
 
   remove(evarman_id: number) {

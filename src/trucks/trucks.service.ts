@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { UserDocument } from 'src/users/schemas/user.schema';
@@ -20,11 +20,15 @@ export class TrucksService {
   }
 
   findOne(car_number: string) {
-    return this.truckModel.findOne({ car_number: car_number }).exec();
+    return this.truckModel.findOne({ car_number: car_number });
+  }
+
+  findNear(coordinates: number[]) {
+    return this.truckModel.find({ location: { $near: { $geometry: { type: 'Point', coordinates: coordinates } } } });
   }
 
   update(car_number: string, updateTruckDto: UpdateTruckDto) {
-    return this.truckModel.findOneAndUpdate({ car_number: car_number }, updateTruckDto, { new: true });
+    return this.truckModel.findOneAndUpdate({ car_number: car_number }, updateTruckDto);
   }
 
   remove(car_number: string) {

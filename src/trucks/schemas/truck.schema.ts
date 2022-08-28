@@ -6,19 +6,19 @@ export type TruckDocument = Truck & Document;
 
 @Schema({ versionKey: false })
 export class Truck {
-  @Prop()
+  @Prop({ unique: true, index: true })
   car_number: string;
 
-  @Prop({ type: Object })
+  @Prop({ required: true, type: Object })
   location: GeoJsonObject;
 
-  @Prop()
+  @Prop({ required: true })
   max_battery: number;
 
-  @Prop()
+  @Prop({ required: true })
   curr_battery: number;
 
-  @Prop()
+  @Prop({ default: 1 })
   status: number;
 
   @Prop()
@@ -26,3 +26,4 @@ export class Truck {
 }
 
 export const TruckSchema = SchemaFactory.createForClass(Truck);
+TruckSchema.index({ location: '2dsphere' });

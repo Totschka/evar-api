@@ -46,3 +46,4 @@ export class Reservation {
 }
 
 export const ReservationSchema = SchemaFactory.createForClass(Reservation);
+ReservationSchema.index({ location: '2dsphere' });

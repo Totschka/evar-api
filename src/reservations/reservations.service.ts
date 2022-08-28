@@ -34,7 +34,7 @@ export class ReservationsService {
       throw new HttpException('should allocate specific truck', HttpStatus.BAD_REQUEST);
     }
 
-    return this.reservationModel.findOneAndUpdate({ id: reservation_id }, updateReservationDto, { new: true });
+    return this.reservationModel.findOneAndUpdate({ id: reservation_id }, updateReservationDto);
   }
 
   remove(reservation_id: string) {

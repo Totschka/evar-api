@@ -24,6 +24,11 @@ export class TrucksController {
     return this.trucksService.findOne(car_number);
   }
 
+  @Get('/near/:lng&:lat')
+  findNear(@Param('lng') lng: number, @Param('lat') lat: number) {
+    return this.trucksService.findNear([+lng, +lat]);
+  }
+
   @Patch(':car_number')
   update(@Param('car_number') car_number: string, @Body() updateTruckDto: UpdateTruckDto) {
     return this.trucksService.update(car_number, updateTruckDto);
